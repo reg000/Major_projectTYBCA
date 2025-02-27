@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Packet Sniffer{% endblock %}
+
+{% block content %}
+<script>
+    function fetchPackets() {
+        fetch('/api/packets/')  
+        .then(response => response.json())
+        .then(data => {
+            let tableBody = document.getElementById("packet-table-body");
+            let rows = "";  
+
+            data.forEach(packet => {
+                rows += `
+                    <tr>
+                        <td>${packet.id}</td> 
+                        <td>${packet.timestamp}</td>
+                        <td>${packet.src_ip}</td>
+                        <td>${packet.dest_ip}</td>
+                        <td>${packet.src_mac}</td>
+                        <td>${packet.dest_mac}</td>
+                        <td>${packet.protocol}</td>
+                        <td>${packet.summary}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = rows;  
+        });
+    } 
+    /*
+    var autoRefresh;
+    function startAutoRefresh() {
+        fetchPackets();  
+        autoRefresh = setInterval(fetchPackets, 1000);  
+    }
+    function stopAutoRefresh() {
+        clearInterval(autoRefresh);  
+        fetchPackets();  
+    } 
+    document.getElementById("stop-btn").addEventListener("click", function() {
+        stopAutoRefresh();  
+    });
+    document.getElementById("start-btn").addEventListener("click", function() {
+        startAutoRefresh();  
+    });
+    */
+    
+    fetchPackets();
+</script>
+
+<h2 class="mb-3">Captured Packets</h2>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Src IP</th>
+                <th>Dest IP</th>
+                <th>Src MAC</th>
+                <th>Dest MAC</th>
+                <th>Protocol</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody id="packet-table-body">
+            
+        </tbody>
+    </table>
+</div>
+{% endblock %}
